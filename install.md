@@ -16,6 +16,7 @@
 - XShell5
 - <div class='important'>jdk1.8.0_191</div>
 - elasticsearch-6.5.4.tar.gz
+- kibana-6.5.4-linux-x86_64.tar.gz
 
 ### 分布式
 3台虚拟机
@@ -38,8 +39,46 @@ systemctl stop firewalld.service
 systemctl disable firewalld.service
 ```
 3. 配置Elasticsearch
-4. 安装各种插件
-5. 安装Kibana
+   
+由于Elasticsearch的主节点是通过集群"选举"出来的，所以每个节点均有可能为主节点
+```
+vim elasticsearch.yml
+
+# 集群名
+cluster.name: gdy-elasticsearcher
+# 节点名
+node.name: es-node-1
+# 是否为主节点
+node.master: true
+# 是否为数据节点
+node.data: true
+# 数据和日志路径
+path.data: /data/elasticsearch/data
+path.logs: /data/elasticsearch/logs
+# 集群地址设置
+discovery.zen.ping.unicast.hosts: ["192.168.137.10", "192.168.137.11", "192.168.137.12"]
+# 节点数目配置# 防止集群发生“脑裂”，即一个集群分裂成多个，配置集群最少主节点数目 (可成为主节点的主机数目 / 2) + 1
+discovery.zen.minimum_master_nodes: 2
+# 当最少几个节点回复之后，集群就正常工作
+gateway.recover_after_nodes: 2
+```
+当然这里不要忘记了创建好/data目录，并配置好权限
+```
+mkdir -p /data/elasticsearch/data
+mkdir -p /data/elasticsearch/logs
+chown -R elastic:elastic /data
+```
+
+启动Elasticsearch
+```
+./bin/elasticsearch -d
+-d 可以后台启动
+```
+
+2. 安装Kibana
+安装步骤类似Elasticsearch
+
+3. 
 
 ## 3. 添加节点
 1. 克隆虚拟机(完全克隆)
