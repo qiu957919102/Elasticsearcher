@@ -17,10 +17,12 @@
 - <div class='important'>jdk1.8.0_191</div>
 - elasticsearch-6.5.4.tar.gz
 - kibana-6.5.4-linux-x86_64.tar.gz
+- elasticsearch-analysis-ik-6.5.4.zip
 
 ### 分布式
 3台虚拟机
 系统镜像: CentOS-7.3-x86_64-DVD-1611.iso
+<div class='important'>还是用些强悍的机器做8...</div>
 
 ## 2. 基本安装
 1. 安装jdk
@@ -91,7 +93,11 @@ chown -R elastic:elastic /data
    
 3.1 ik中文分词
 ```
+1. 下载安装包
+https://github.com/medcl/elasticsearch-analysis-ik
+解压到elasticsearch的plugins/ik目录下
 
+2. bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.5.4/elasticsearch-analysis-ik-6.5.4.zip
 ``` 
 
 ## 3. 添加节点
