@@ -15,9 +15,11 @@
 - VMware-workstation-full-12.1.1-3770994.exe
 - XShell5
 - <div class='important'>jdk1.8.0_191</div>
-- elasticsearch-6.5.4.tar.gz
-- kibana-6.5.4-linux-x86_64.tar.gz
-- elasticsearch-analysis-ik-6.5.4.zip
+- elasticsearch-5.6.13.tar.gz
+- kibana-5.6.13-linux-x86_64.tar.gz
+- elasticsearch-analysis-ik-5.6.13.zip
+
+<div class='important'>ES版本最后确定使用5.x.x 因为6版本在与数据库同步时有问题</div>
 
 ### 分布式
 3台虚拟机
@@ -97,7 +99,7 @@ chown -R elastic:elastic /data
 https://github.com/medcl/elasticsearch-analysis-ik
 解压到elasticsearch的plugins/ik目录下
 
-2. bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.5.4/elasticsearch-analysis-ik-6.5.4.zip
+2. bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v5.6.13/elasticsearch-analysis-ik-5.6.13.zip
 ``` 
 
 ## 3. 添加节点
@@ -217,7 +219,7 @@ discovery.zen.ping.unicast.hosts
 ## 启动ES直接返回Killed
 ```
 虚拟机内存不足
-ES(6.5.4)这个版本占用的内存大概在1.2-1.5G左右
+ES(6.5.4)这个版本占用的内存大概在1.2-1.5G左右, 因为后面改成了5.6.13版本，未测试，暂时不修改
 每台机器配置2G内存其实是足够的，还是建议配高点
 如果2G不运行其他进程，出现这个问题，重启试试
 ```
