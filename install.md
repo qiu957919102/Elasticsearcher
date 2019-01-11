@@ -61,6 +61,8 @@ discovery.zen.ping.unicast.hosts: ["192.168.137.10", "192.168.137.11", "192.168.
 discovery.zen.minimum_master_nodes: 2
 # 当最少几个节点回复之后，集群就正常工作
 gateway.recover_after_nodes: 2
+# 开启内存交换，提高ES性能
+bootstrap.memory_lock: true
 ```
 当然这里不要忘记了创建好/data目录，并配置好权限
 ```
@@ -73,12 +75,24 @@ chown -R elastic:elastic /data
 ```
 ./bin/elasticsearch -d
 -d 可以后台启动
+
+然后通过访问`http://192.168.137.10:9200/_cluster/state`查看集群信息
 ```
 
 2. 安装Kibana
-安装步骤类似Elasticsearch
+   
+**这里建议给需要安装Kibana的虚拟机分配多点内存**
 
-3. 
+安装步骤类似Elasticsearch, 启动Kibana后打开网址
+
+`http://192.168.137.10:5601` 点击 `Monitoring`查看集群信息
+
+3. 安装插件
+   
+3.1 ik中文分词
+```
+
+``` 
 
 ## 3. 添加节点
 1. 克隆虚拟机(完全克隆)
@@ -121,4 +135,88 @@ UseDNS no  --->把注释打开，改为no
 
 然后重启ssh服务即可
 service sshd restart
+```
+
+## memory locking requested for elasticsearch process but memory is not locked
+
+```
+vim /etc/security/limits.conf
+
+添加如下内容
+* soft nofile 65536
+* hard nofile 65536
+* soft nproc 32000
+* hard nproc 32000
+* hard memlock unlimited
+* soft memlock unlimited
+
+vim /etc/systemd/system.conf
+
+添加如下内容
+DefaultLimitNOFILE=65536
+DefaultLimitNPROC=32000
+DefaultLimitMEMLOCK=infinity
+```
+
+## Java.lang.UnsupportedOperationException: seccomp unavailable: requires kernel 3.5+ ...
+
+```
+Linux版本过低
+1、重新安装新版本的Linux系统
+2、警告不影响使用，可以忽略
+```
+
+## max file descriptors [4096] for elasticsearch process likely too low, increase to at least [65536]
+
+```
+vim /etc/security/limits.conf
+
+* soft nofile 65536
+* hard nofile 65536
+* soft nproc 32000
+* hard nproc 32000
+```
+这个建议跟上面的**memory locking requested for elasticsearch process but memory is not locked**一样修改
+
+## max number of threads [1024] for user [es] likely too low, increase to at least [2048]
+
+```
+vim /etc/security/limits.d/90-nproc.conf
+
+* soft nproc 1024 修改为 * soft nproc 2048
+```
+
+## max virtual memory areas vm.max_map_count [65530] likely too low, increase to at least [262144]
+
+```
+添加如下内容
+vm.max_map_count=655360
+
+执行命令
+sysctl -p
+```
+
+## org.elasticsearch.transport.RemoteTransportException: Failed to deserialize exception response from stream
+
+```
+ES节点之间的JDK版本不一致
+```
+
+## ElasticSearch启动找不到主机或路由
+```
+检查Elasticsearch.yml中的
+discovery.zen.ping.unicast.hosts
+```
+
+## 启动ES直接返回Killed
+```
+虚拟机内存不足
+ES(6.5.4)这个版本占用的内存大概在1.2-1.5G左右
+每台机器配置2G内存其实是足够的，还是建议配高点
+如果2G不运行其他进程，出现这个问题，重启试试
+```
+
+## Kibana server is not ready yet
+```
+说了没准备好，等会就好啦:)
 ```
