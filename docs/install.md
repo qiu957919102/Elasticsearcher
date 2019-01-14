@@ -19,7 +19,7 @@
 - kibana-5.6.13-linux-x86_64.tar.gz
 - elasticsearch-analysis-ik-5.6.13.zip
 
-<div class='important'>ES版本最后确定使用5.x.x 因为6版本在与数据库同步时有问题</div>
+<div class='important'>ES版本最后确定使用5.6.4(同步腾讯云的版本) 因为6版本在与数据库同步时有问题</div>
 
 ### 分布式
 3台虚拟机
