@@ -6,6 +6,9 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+mongo-connector = {extras = ["elastic5"],version = "*"}
+pymongo = "*"
+elasticsearch = {path = "./wheelhouse/elasticsearch-5.5.3-py2.py3-none-any.whl"}
 
 [requires]
 python_version = "3.6"
